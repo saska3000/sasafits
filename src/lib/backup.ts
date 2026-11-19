@@ -10,7 +10,7 @@ interface BackupFile {
   tables: Record<string, { id: string; updatedAt: number }[]>;
 }
 
-const TABLES = ['profiles', 'foods', 'entries', 'favorites', 'recipes', 'votes'] as const;
+const TABLES = ['profiles', 'foods', 'entries', 'favorites', 'recipes', 'votes', 'weights'] as const;
 
 /** Сохранить все данные в файл (на телефоне откроется меню «Поделиться» → «Сохранить в Файлы») */
 export async function exportBackup(): Promise<void> {

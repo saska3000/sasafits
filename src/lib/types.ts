@@ -64,6 +64,17 @@ export interface Profile {
   deleted?: boolean;
 }
 
+/** Вес за день: одна запись на человека в день */
+export interface WeightEntry {
+  /** `${profileId}:${date}` */
+  id: string;
+  profileId: string;
+  date: string;
+  kg: number;
+  updatedAt: number;
+  deleted?: boolean;
+}
+
 /** Запись в дневнике. Хранит «снимок» продукта, чтобы история не менялась при правке продукта */
 export interface DiaryEntry {
   id: string;

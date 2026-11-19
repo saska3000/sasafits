@@ -7,7 +7,7 @@ import { AddFoodScreen } from './screens/AddFood';
 import { CreditsScreen } from './screens/Credits';
 import { DiaryScreen } from './screens/Diary';
 import { FoodFormScreen } from './screens/FoodForm';
-import { PlaceholderScreen } from './screens/Placeholder';
+import { ProgressScreen } from './screens/Progress';
 import { ProductsScreen } from './screens/Products';
 import { ProfileScreen } from './screens/Profile';
 import { RecipeDetailScreen } from './screens/RecipeDetail';
@@ -38,10 +38,7 @@ function Shell() {
         <Route path="/recipe/:id/edit" element={<RecipeFormScreen />} />
         <Route path="/swipe" element={<SwipeScreen />} />
         <Route path="/scan" element={<ScanScreen />} />
-        <Route
-          path="/progress"
-          element={<PlaceholderScreen title="Прогресс" icon="📈" text="Вес, график и статистика за неделю и месяц появятся на четвёртом этапе." />}
-        />
+        <Route path="/progress" element={<ProgressScreen />} />
         <Route path="/profile" element={<ProfileScreen />} />
         <Route path="/credits" element={<CreditsScreen />} />
         <Route path="*" element={<Navigate to="/" replace />} />

@@ -2,6 +2,7 @@ import { useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { AmountSheet } from '../components/AmountSheet';
 import { EntryFixSheet } from '../components/EntryFixSheet';
+import { WeightCard } from '../components/WeightCard';
 import { IconChevronLeft, IconChevronRight, IconPlus, IconWarn } from '../components/Icons';
 import { MacroBar, Ring, TopBar, toast } from '../components/ui';
 import { amountText, deleteEntry, entryMacros, restoreEntry, updateEntry, useDayEntries } from '../lib/diary';
@@ -149,6 +150,8 @@ export function DiaryScreen() {
             </section>
           );
         })}
+
+        <WeightCard profile={profile} date={date} />
       </main>
 
       {editing && (
