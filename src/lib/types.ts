@@ -53,6 +53,8 @@ export interface Profile {
   targetWeightKg?: number;
   /** С какого веса начинали (до приложения тоже) — от него идёт тропинка к цели */
   startWeightKg?: number;
+  /** Как зовут питомца на главной */
+  petName?: string;
   /** Коэффициент активности для формулы (1.2 … 1.9) */
   activity: number;
   goalType: GoalType;
@@ -62,6 +64,16 @@ export interface Profile {
   restrictions: Tag[];
   /** Размер порции относительно стандартной (1 — как у Саши в меню, 1,2 — у парня) */
   portionFactor?: number;
+  updatedAt: number;
+  deleted?: boolean;
+}
+
+/** День, когда человек заходил в приложение — из них растёт сад */
+export interface Visit {
+  /** `${profileId}:${date}` */
+  id: string;
+  profileId: string;
+  date: string;
   updatedAt: number;
   deleted?: boolean;
 }

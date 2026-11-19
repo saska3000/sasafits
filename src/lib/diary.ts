@@ -1,4 +1,5 @@
 import { useLiveQuery } from 'dexie-react-hooks';
+import { afterEntryAdded } from './pet';
 import { db, newId } from './db';
 import { scale } from './nutrition';
 import type { DiaryEntry, Food, Macros, MealType, Serving } from './types';
@@ -73,6 +74,7 @@ export async function addFoodEntry(args: {
     updatedAt: now,
   };
   await db.entries.add(entry);
+  await afterEntryAdded(entry.profileId, entry.date, entry.meal);
   return entry;
 }
 

@@ -2,6 +2,7 @@ import { useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { AmountSheet } from '../components/AmountSheet';
 import { EntryFixSheet } from '../components/EntryFixSheet';
+import { PetCard } from '../components/PetCard';
 import { WeightCard } from '../components/WeightCard';
 import { IconChevronLeft, IconChevronRight, IconPlus, IconWarn, MealIcon } from '../components/Icons';
 import { MacroBar, Ring, TopBar, toast } from '../components/ui';
@@ -104,6 +105,8 @@ export function DiaryScreen() {
             <MacroBar label="Углеводы" value={total.c} goal={g.c} color="var(--carbs)" />
           </div>
         </section>
+
+        <PetCard profile={profile} date={date} entries={entries} kcal={total.kcal} />
 
         {MEALS.map((meal) => {
           const list = (entries ?? []).filter((e) => e.meal === meal.id);

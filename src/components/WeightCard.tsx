@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { fmtNum, humanDate } from '../lib/format';
 import type { Profile } from '../lib/types';
 import { cheer, roundKg, setWeight, useWeights, weightAt, weightProgress, type WeightProgress } from '../lib/weight';
-import { IconTree } from './Icons';
+import { IconScale, IconTree } from './Icons';
 import { GoalSheet, WeightSheet } from './WeightSheet';
 import { ForestTrail } from './WeightViz';
 
@@ -20,7 +20,7 @@ export function metaText(p: WeightProgress | null): string {
  * Главная карточка веса: лесная тропа от старта к цели и счётчик «−» / «+» по 100 г.
  * Показываем только настоящие взвешивания — вес из профиля за взвешивание не выдаём.
  */
-export function WeightCard({ profile, date }: { profile: Profile; date: string }) {
+export function WeightCard({ profile, date, showTrail = false }: { profile: Profile; date: string; showTrail?: boolean }) {
   const list = useWeights(profile.id);
   const [sheet, setSheet] = useState<null | 'day' | 'start' | 'target'>(null);
   if (!list) return null;
@@ -39,15 +39,17 @@ export function WeightCard({ profile, date }: { profile: Profile; date: string }
     <section className="card weight-card">
       <div className="meal-head">
         <div className="meal-title">
-          <IconTree className="meal-icon" width={22} height={22} />
-          <span>Путь к цели</span>
+          {showTrail ? <IconTree className="meal-icon" width={22} height={22} /> : <IconScale className="meal-icon" width={22} height={22} />}
+          <span>{showTrail ? 'Путь к цели' : 'Вес'}</span>
         </div>
-        <Link to="/progress" className="weight-link">
-          График ›
-        </Link>
+        {!showTrail && (
+          <Link to="/progress" className="weight-link">
+            Путь и график ›
+          </Link>
+        )}
       </div>
 
-      {p?.share != null ? (
+      {!showTrail ? null : p?.share != null ? (
         <>
           <ForestTrail
             share={p.share}

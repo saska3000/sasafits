@@ -2,6 +2,7 @@ import { useLiveQuery } from 'dexie-react-hooks';
 import { MENU_RECIPES as OUR_MENU } from '../data/menuRecipes';
 import { NASTYA_RECIPES } from '../data/nastyaRecipes';
 import { db, newId } from './db';
+import { afterEntryAdded } from './pet';
 import { entryMacros } from './diary';
 import { starterFood } from './foods';
 import { ZERO, scale, sum } from './nutrition';
@@ -138,6 +139,7 @@ export async function addRecipeEntry(args: {
     updatedAt: now,
   };
   await db.entries.add(entry);
+  await afterEntryAdded(entry.profileId, entry.date, entry.meal);
   return entry;
 }
 

@@ -2105,17 +2105,15 @@ input[type='search']::-webkit-search-cancel-button {
 }
 .shape {
   position: absolute;
+  left: 0;
+  top: 0;
   width: 43%;
   aspect-ratio: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition:
-    left 0.32s cubic-bezier(0.3, 1.4, 0.5, 1),
-    top 0.32s cubic-bezier(0.3, 1.4, 0.5, 1),
-    transform 0.32s cubic-bezier(0.3, 1.4, 0.5, 1),
-    opacity 0.3s ease,
-    width 0.4s ease;
+  will-change: transform;
+  transition: opacity 0.35s ease;
   filter: drop-shadow(0 8px 18px rgba(40, 30, 30, 0.1));
 }
 .shape svg {
@@ -2140,40 +2138,17 @@ input[type='search']::-webkit-search-cancel-button {
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
-.shake-stage.shaking .shape {
-  animation: wobble 0.32s ease-in-out infinite alternate;
-}
-@keyframes wobble {
-  from {
-    translate: -4px 2px;
-  }
-  to {
-    translate: 4px -2px;
-  }
-}
 .shape.lose {
-  opacity: 0.18;
-  transform: scale(0.8) !important;
+  opacity: 0.15;
 }
 .shape.win {
-  left: 17%;
-  top: 14%;
-  width: 66%;
   z-index: 2;
-  transform: rotate(0deg) scale(1);
-  animation: pop 0.45s cubic-bezier(0.3, 1.6, 0.5, 1);
+  transition:
+    transform 0.55s cubic-bezier(0.3, 1.35, 0.5, 1),
+    opacity 0.3s ease;
 }
 .shape.win .shape-name {
-  font-size: 17px;
-  max-width: 68%;
-}
-@keyframes pop {
-  from {
-    transform: scale(0.6) rotate(-12deg);
-  }
-  to {
-    transform: scale(1) rotate(0deg);
-  }
+  font-size: 12px;
 }
 .surprise-hint {
   margin: 0;
@@ -2192,4 +2167,237 @@ input[type='search']::-webkit-search-cancel-button {
   font-weight: 600;
   font-size: 17px;
   line-height: 1.25;
+}
+
+/* ---------- Питомица и сад на главной ---------- */
+:root {
+  --garden-ground: #f3e2e7;
+}
+:root[data-theme='dark'] {
+  --garden-ground: #2c2126;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --garden-ground: #2c2126;
+  }
+}
+.pet-card {
+  padding-bottom: 12px;
+}
+.pet-top {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+}
+.pet-figure {
+  width: 50%;
+  max-width: 220px;
+  flex: none;
+  overflow: visible;
+}
+.pet-talk {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-bottom: 8px;
+}
+.pet-bubble {
+  position: relative;
+  hyphens: auto;
+  -webkit-hyphens: auto;
+  background: var(--glass-strong);
+  border: 1px solid var(--glass-border);
+  border-radius: 18px 18px 18px 6px;
+  padding: 10px 12px;
+  font-size: 14px;
+  line-height: 1.3;
+  box-shadow: var(--shadow);
+}
+.pet-bubble.pop {
+  animation: bubble-pop 0.5s cubic-bezier(0.3, 1.6, 0.5, 1);
+}
+@keyframes bubble-pop {
+  from {
+    transform: scale(0.85);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+.pet-name {
+  align-self: flex-start;
+  border: 0;
+  background: none;
+  padding: 0;
+  font-weight: 600;
+  font-size: 16px;
+  text-align: left;
+}
+.pet-name span {
+  color: var(--text-2);
+  font-weight: 500;
+}
+/* питомица-картинка: дышит, подпрыгивает от радости */
+.pet-photo {
+  position: relative;
+  aspect-ratio: 200 / 220;
+}
+.pet-photo .doodle {
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform-origin: 50% 100%;
+  animation: pet-breathe 3.4s ease-in-out infinite;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+@keyframes pet-breathe {
+  0%,
+  100% {
+    transform: scale(1, 1);
+  }
+  50% {
+    transform: scale(1.02, 0.98);
+  }
+}
+.pet-photo.mood-hungry .doodle {
+  animation: pet-breathe 4.5s ease-in-out infinite;
+}
+@keyframes pet-hungry {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(-2.5deg);
+  }
+  75% {
+    transform: rotate(2.5deg);
+  }
+}
+.pet-photo.mood-full .doodle {
+  animation: pet-breathe 5s ease-in-out infinite;
+  opacity: 0.92;
+}
+.pet-photo.celebrate .doodle {
+  animation: pet-jump 0.6s cubic-bezier(0.3, 1.4, 0.5, 1) 3;
+}
+@keyframes pet-jump {
+  0%,
+  100% {
+    transform: translateY(0) scale(1, 1);
+  }
+  30% {
+    transform: translateY(0) scale(1.06, 0.92);
+  }
+  60% {
+    transform: translateY(-14px) scale(0.96, 1.05);
+  }
+}
+.pet-badge {
+  position: absolute;
+}
+.pet-flower {
+  top: 4%;
+  right: 12%;
+  width: 26%;
+  animation: flower-in 0.6s cubic-bezier(0.3, 1.6, 0.5, 1);
+}
+@keyframes flower-in {
+  from {
+    transform: scale(0) rotate(-90deg);
+  }
+  to {
+    transform: scale(1) rotate(0deg);
+  }
+}
+.pet-zzz {
+  top: 2%;
+  right: 8%;
+  font-weight: 700;
+  font-size: 22px;
+  color: var(--fat);
+  animation: zzz 2.4s ease-in-out infinite;
+}
+.pet-zzz small {
+  font-size: 15px;
+  margin-left: 2px;
+}
+@keyframes zzz {
+  0%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.6;
+  }
+  50% {
+    transform: translateY(-6px);
+    opacity: 1;
+  }
+}
+.pet-sparkles {
+  position: absolute;
+  inset: 0;
+  animation: sparkle 0.9s ease-in-out infinite alternate;
+}
+@keyframes sparkle {
+  from {
+    opacity: 0.3;
+  }
+  to {
+    opacity: 1;
+  }
+}
+/* сад */
+.garden {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin-top: 6px;
+}
+.garden .sprout {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: sprout 1.2s cubic-bezier(0.3, 1.4, 0.5, 1);
+}
+@keyframes sprout {
+  from {
+    transform: scale(0, 0);
+  }
+  to {
+    transform: scale(1, 1);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pet-photo *,
+  .garden * {
+    animation: none !important;
+  }
+}
+
+/* дудл-монстрика: моргает и машет ручкой */
+.doodle .doodle-eye {
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+  animation: pet-blink 5s infinite;
+}
+@keyframes pet-blink {
+  0%,
+  94%,
+  100% {
+    transform: scaleY(1);
+  }
+  96% {
+    transform: scaleY(0.1);
+  }
+}
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
 }

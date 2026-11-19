@@ -8,6 +8,7 @@ import { CreditsScreen } from './screens/Credits';
 import { DiaryScreen } from './screens/Diary';
 import { FoodFormScreen } from './screens/FoodForm';
 import { ProgressScreen } from './screens/Progress';
+import { PetPreview } from './screens/PetPreview';
 import { ProductsScreen } from './screens/Products';
 import { ProfileScreen } from './screens/Profile';
 import { RecipeDetailScreen } from './screens/RecipeDetail';
@@ -41,6 +42,8 @@ function Shell() {
         <Route path="/progress" element={<ProgressScreen />} />
         <Route path="/profile" element={<ProfileScreen />} />
         <Route path="/credits" element={<CreditsScreen />} />
+        {/* Только на компьютере при разработке: все формы питомицы крупно */}
+        {import.meta.env.DEV && <Route path="/pet-preview" element={<PetPreview />} />}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
       {showTabs && <TabBar />}

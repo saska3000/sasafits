@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { metaText } from '../components/WeightCard';
+import { WeightCard, metaText } from '../components/WeightCard';
 import { WeightSheet } from '../components/WeightSheet';
 import { WeightChart } from '../components/WeightViz';
-import { Empty, TopBar } from '../components/ui';
+import { TopBar } from '../components/ui';
 import { entryMacros, useProfileEntries } from '../lib/diary';
 import { addDays, fmtKcal, fmtNum, humanDate, plural, todayStr } from '../lib/format';
 import { sum } from '../lib/nutrition';
@@ -59,32 +59,21 @@ export function ProgressScreen() {
 
   const p = weightProgress(list, profile);
   const today = todayStr();
-  const todayEntry = list.find((w) => w.date === today);
 
   return (
     <div className="screen">
       <TopBar title="Прогресс" />
       <main className="content">
-        {list.length === 0 ? (
-          <Empty title="Взвешиваний пока нет">
-            Впишите вес на главной или здесь — и появится график.
-            <button className="btn primary" style={{ marginTop: 16 }} onClick={() => setSheet({ date: today, exists: false })}>
-              Вписать вес за сегодня
-            </button>
-          </Empty>
-        ) : (
+        {/* Лесная тропа к цели и тот же счётчик веса, что на главной */}
+        <WeightCard profile={profile} date={today} showTrail />
+
+        {list.length >= 1 && (
           <section className="card">
             <div className="meal-head">
-              <h2 className="card-title">Вес</h2>
+              <h2 className="card-title">График веса</h2>
               <span className="muted small">{metaText(p)}</span>
             </div>
             <WeightChart list={list} target={profile.targetWeightKg} />
-            <button
-              className="btn outline"
-              onClick={() => setSheet({ date: today, kg: todayEntry?.kg ?? list.at(-1)?.kg, exists: !!todayEntry })}
-            >
-              {todayEntry ? `Сегодня ${fmtNum(todayEntry.kg)} кг — изменить` : 'Записать вес за сегодня'}
-            </button>
           </section>
         )}
 

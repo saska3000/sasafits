@@ -1,5 +1,5 @@
 import Dexie, { type Table } from 'dexie';
-import type { DiaryEntry, Favorite, Food, Profile, Recipe, Vote, WeightEntry } from './types';
+import type { DiaryEntry, Favorite, Food, Profile, Recipe, Visit, Vote, WeightEntry } from './types';
 
 /**
  * Локальная база данных в браузере (IndexedDB).
@@ -14,6 +14,7 @@ class KaloriiDB extends Dexie {
   recipes!: Table<Recipe, string>;
   votes!: Table<Vote, string>;
   weights!: Table<WeightEntry, string>;
+  visits!: Table<Visit, string>;
 
   constructor() {
     super('kalorii');
@@ -38,6 +39,9 @@ class KaloriiDB extends Dexie {
       );
     this.version(3).stores({
       weights: 'id, [profileId+date], profileId, updatedAt',
+    });
+    this.version(4).stores({
+      visits: 'id, profileId, updatedAt',
     });
   }
 }
