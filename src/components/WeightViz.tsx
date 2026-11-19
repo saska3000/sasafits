@@ -53,7 +53,7 @@ export function ForestTrail({ share, letter, startLabel, goalLabel }: { share: n
         <path
           d={TRAIL}
           fill="none"
-          stroke="var(--accent-text)"
+          stroke="var(--trail-done)"
           strokeWidth="4"
           strokeLinecap="round"
           strokeDasharray={`${geo.len * share} ${geo.len}`}
@@ -78,7 +78,7 @@ export function ForestTrail({ share, letter, startLabel, goalLabel }: { share: n
       </text>
       {geo && (
         <g transform={`translate(${geo.x} ${geo.y})`}>
-          <circle r="13" fill="var(--surface)" stroke="var(--accent-text)" strokeWidth="3" />
+          <circle r="13" fill="var(--surface)" stroke="var(--trail-done)" strokeWidth="3" />
           <text y="4.5" textAnchor="middle" className="forest-me">
             {letter}
           </text>

@@ -190,7 +190,7 @@ export function ScanScreen() {
               {state === 'starting' && 'Включаю камеру…'}
               {state === 'looking' && 'Ищу продукт…'}
               {state === 'found' && 'Нашёлся!'}
-              {state === 'nocamera' && '📷'}
+              {state === 'nocamera' && 'Камера выключена'}
             </div>
           )}
         </div>

@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { IconPlus, IconSearch, IconWarn, IconX } from '../components/Icons';
+import { IconHeart, IconPlus, IconSearch, IconWarn, IconX } from '../components/Icons';
 import { RecipePic } from '../components/RecipePic';
 import { Empty, TopBar } from '../components/ui';
 import { fmtKcal } from '../lib/format';
@@ -30,7 +30,9 @@ export function RecipesScreen() {
       <TopBar title="Рецепты" />
       <main className="content">
         <Link to="/swipe" className="swipe-cta">
-          <span className="swipe-cta-emoji">💞</span>
+          <span className="swipe-cta-icon">
+            <IconHeart filled width={22} height={22} />
+          </span>
           <span>
             <b>Что поедим?</b>
             <span className="small">Свайпайте вдвоём — совпадение покажет, что приготовить</span>

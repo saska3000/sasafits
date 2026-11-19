@@ -1,6 +1,8 @@
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { MoodIcon } from '../components/Icons';
 import { RecipePic } from '../components/RecipePic';
+import { Surprise } from '../components/Surprise';
 import { SwipeDeck, type SwipeDir } from '../components/SwipeDeck';
 import { Empty, TopBar, toast } from '../components/ui';
 import { fmtKcal, plural, todayStr } from '../lib/format';
@@ -88,6 +90,9 @@ export function SwipeScreen() {
     return suitable.filter((c) => ids.has(c.recipe.id));
   }, [votes, profiles, suitable]);
 
+  // Для «Удиви меня»: всё, что подходит и ещё не оценено
+  const surpriseCards = suitable.filter((c) => !myVotes.has(c.recipe.id) && !swiped.has(`${swiper.id}:${meal}:${c.recipe.id}`));
+
   const myLikesWaiting = suitable.filter((c) => myVotes.get(c.recipe.id) === true && !matches.includes(c));
 
   const onSwipe = async (card: Card, dir: SwipeDir) => {
@@ -144,8 +149,8 @@ export function SwipeScreen() {
               {MOODS.map((m) => {
                 const n = suitable.filter((c) => fitsMood(c.recipe, c.calc, m.id) && !myVotes.has(c.recipe.id)).length;
                 return (
-                  <button key={m.id} className={'mood' + (m.id === 'any' ? ' wide' : '')} onClick={() => setMood(m.id)} disabled={n === 0}>
-                    <span className="mood-emoji">{m.emoji}</span>
+                  <button key={m.id} className={`mood mood-${m.id}` + (m.id === 'any' ? ' wide' : '')} onClick={() => setMood(m.id)} disabled={n === 0}>
+                    <MoodIcon mood={m.id} className="mood-icon" width={30} height={30} />
                     <span>{m.label}</span>
                     <span className="muted small">{n ? `${n} ${plural(n, 'блюдо', 'блюда', 'блюд')}` : 'нет'}</span>
                   </button>
@@ -159,11 +164,20 @@ export function SwipeScreen() {
               </Empty>
             )}
           </>
+        ) : mood === 'any' && surpriseCards.length > 0 ? (
+          <Surprise
+            key={`${swiper.id}:${meal}`}
+            cards={surpriseCards}
+            swiper={swiper}
+            onLike={(c) => onSwipe(c, 'right')}
+            onOpen={(c) => navigate(`/recipe/${c.recipe.id}?meal=${meal}`)}
+            onBack={() => setMood(null)}
+          />
         ) : deck.length > 0 ? (
           <>
             <div className="deck-head">
               <button className="chip" onClick={() => setMood(null)}>
-                ← {MOODS.find((m) => m.id === mood)?.emoji} {MOODS.find((m) => m.id === mood)?.label}
+                ← {MOODS.find((m) => m.id === mood)?.label}
               </button>
               <span className="muted small">
                 осталось {deck.length} {deck.length === 1 ? 'карточка' : deck.length < 5 ? 'карточки' : 'карточек'}
@@ -178,7 +192,6 @@ export function SwipeScreen() {
           </>
         ) : (
           <div className="deck-done">
-            <div className="empty-icon">🎉</div>
             <div className="empty-title">Карточки закончились</div>
             {nextSwiper && (
               <button className="btn primary" onClick={() => setSwiperId(nextSwiper.id)}>
@@ -204,7 +217,7 @@ export function SwipeScreen() {
 
         {matches.length > 0 && (
           <section className="card matches">
-            <h2>💞 Мэтчи на {mealLabel(meal).toLowerCase()}</h2>
+            <h2>Мэтчи на {mealLabel(meal).toLowerCase()}</h2>
             <ul className="food-list">
               {matches.map((c) => (
                 <li key={c.recipe.id}>
@@ -231,7 +244,7 @@ export function SwipeScreen() {
       {match && (
         <div className="match-overlay" onClick={() => setMatch(null)}>
           <div className="match-box" onClick={(e) => e.stopPropagation()}>
-            <div className="match-title">Это мэтч! 💞</div>
+            <div className="match-title">Это мэтч!</div>
             <div className="match-sub">Вы оба хотите</div>
             <div className="match-pic">
               <RecipePic recipe={match.recipe} />
@@ -286,7 +299,7 @@ function RecipeCard({
           <b>{fmtKcal(mine.kcal)}</b> ккал · Б {Math.round(mine.p)} · Ж {Math.round(mine.f)} · У {Math.round(mine.c)}
         </div>
         <div className="muted small">
-          {recipe.timeMin ? `⏱ ${recipe.timeMin} мин · ` : ''}
+          {recipe.timeMin ? `${recipe.timeMin} мин · ` : ''}
           после него останется: {profiles.map((p) => `${p.name} ${fmtKcal(remaining(p) - portionFor(calc, p).kcal)}`).join(', ')}
         </div>
       </div>

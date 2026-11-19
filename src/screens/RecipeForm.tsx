@@ -11,8 +11,6 @@ import { MEALS } from '../lib/nutrition';
 import { calcRecipe, saveRecipe } from '../lib/recipes';
 import type { Food, MealType, RecipeIngredient, RecipeKind } from '../lib/types';
 
-const EMOJIS = ['🍽️', '🥗', '🍲', '🍛', '🍝', '🍗', '🥩', '🍳', '🥞', '🧆', '🌯', '🌮', '🥙', '🍣', '🍜', '🥣', '🍕', '🍔', '🥪', '🍧', '🍨', '🍓', '🍌', '🥤', '🧀', '🥕', '🥒', '🍅'];
-
 const KINDS: { id: RecipeKind; label: string }[] = [
   { id: 'meat', label: 'Мясное' },
   { id: 'sweet', label: 'Сладкое' },
@@ -25,7 +23,7 @@ export function RecipeFormScreen() {
   const goBack = useGoBack();
   const [loaded, setLoaded] = useState(!id);
   const [name, setName] = useState('');
-  const [emoji, setEmoji] = useState('🍽️');
+  const [emoji, setEmoji] = useState<string | undefined>(undefined);
   const [image, setImage] = useState<string | undefined>(undefined);
   const photoRef = useRef<HTMLInputElement>(null);
   const [meals, setMeals] = useState<MealType[]>(['lunch', 'dinner']);
@@ -45,7 +43,7 @@ export function RecipeFormScreen() {
     db.recipes.get(id).then((r) => {
       if (r) {
         setName(r.name);
-        setEmoji(r.emoji ?? '🍽️');
+        setEmoji(r.emoji);
         setImage(r.image);
         setMeals(r.meals);
         setKinds(r.kinds);
@@ -139,7 +137,7 @@ export function RecipeFormScreen() {
           <RecipePic recipe={{ image, emoji, name }} className="photo-preview" />
           <div className="stack grow">
             <button className="btn outline" onClick={() => photoRef.current?.click()}>
-              📷 {image ? 'Другое фото' : 'Добавить фото'}
+              {image ? 'Другое фото' : 'Добавить фото'}
             </button>
             {image && (
               <button className="btn outline danger" onClick={() => setImage(undefined)}>
@@ -164,15 +162,6 @@ export function RecipeFormScreen() {
             }}
           />
         </div>
-        <div className="muted small">Если фото нет — будет смайлик:</div>
-        <div className="emoji-pick">
-          {EMOJIS.map((e) => (
-            <button key={e} className={emoji === e ? 'active' : ''} onClick={() => setEmoji(e)}>
-              {e}
-            </button>
-          ))}
-        </div>
-
         <div className="label">Когда едим</div>
         <div className="chips">
           {MEALS.map((m) => (

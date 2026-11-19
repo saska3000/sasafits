@@ -212,7 +212,7 @@ export function AddFoodScreen() {
               </>
             ) : (
               <button className="btn outline" onClick={runOff} disabled={offLoading}>
-                {offLoading ? 'Ищу…' : `🔎 Искать «${query.trim()}» в магазинных товарах`}
+                {offLoading ? 'Ищу…' : `Искать «${query.trim()}» в магазинных товарах`}
               </button>
             )}
             {offError && <div className="hint">{offError}</div>}

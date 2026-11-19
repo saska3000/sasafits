@@ -16,6 +16,7 @@ interface Draft {
   heightCm: string;
   weightKg: string;
   targetWeightKg: string;
+  startWeightKg: string;
   activity: number;
   goalType: GoalType;
   kcal: string;
@@ -36,6 +37,7 @@ function toDraft(p: Profile): Draft {
     heightCm: s(p.heightCm),
     weightKg: s(p.weightKg),
     targetWeightKg: s(p.targetWeightKg),
+    startWeightKg: s(p.startWeightKg),
     activity: p.activity,
     goalType: p.goalType,
     kcal: s(p.goals.kcal),
@@ -99,6 +101,7 @@ export function ProfileScreen() {
       heightCm: opt(draft.heightCm),
       weightKg: opt(draft.weightKg),
       targetWeightKg: opt(draft.targetWeightKg),
+      startWeightKg: opt(draft.startWeightKg),
       activity: draft.activity,
       goalType: draft.goalType,
       goals,
@@ -184,6 +187,10 @@ export function ProfileScreen() {
               <input className="input" inputMode="decimal" {...bind('targetWeightKg')} />
             </label>
           </div>
+          <label className="field">
+            <span>Вес на старте, кг — с какого веса вы начинали</span>
+            <input className="input" inputMode="decimal" {...bind('startWeightKg')} />
+          </label>
           <label className="field">
             <span>Активность</span>
             <select className="input" value={draft.activity} onChange={(e) => set('activity', Number(e.target.value))}>
@@ -275,9 +282,9 @@ export function ProfileScreen() {
           <div className="segmented">
             {(
               [
-                ['auto', 'Авто'],
                 ['light', 'Светлая'],
                 ['dark', 'Тёмная'],
+                ['auto', 'Как на телефоне'],
               ] as [ThemeMode, string][]
             ).map(([m, label]) => (
               <button key={m} className={theme === m ? 'active' : ''} onClick={() => pickTheme(m)}>

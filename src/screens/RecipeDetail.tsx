@@ -63,7 +63,7 @@ export function RecipeDetailScreen() {
           )}
           <h1>{recipe.name}</h1>
           <div className="muted small">
-            {recipe.timeMin ? `⏱ ${recipe.timeMin} мин · ` : ''}
+            {recipe.timeMin ? `${recipe.timeMin} мин · ` : ''}
             {recipe.meals.map(mealLabel).join(', ')} ·{' '}
             {recipe.servings === 1
               ? 'на 1 порцию'
@@ -102,7 +102,7 @@ export function RecipeDetailScreen() {
               </div>
             </div>
           </div>
-          {recipe.portionNote && <p className="small recipe-portion">🍽 {recipe.portionNote}</p>}
+          {recipe.portionNote && <p className="small recipe-portion">{recipe.portionNote}</p>}
           <button className="btn primary" style={{ width: '100%' }} onClick={() => setAdding(true)}>
             Добавить в дневник
           </button>

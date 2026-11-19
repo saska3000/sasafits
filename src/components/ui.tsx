@@ -1,4 +1,5 @@
 import { useEffect, useId, useRef, useState, type ReactNode } from 'react';
+import { createPortal } from 'react-dom';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { fmtG, fmtKcal } from '../lib/format';
 import { useProfiles } from '../lib/profiles';
@@ -60,7 +61,13 @@ export function TabBar() {
   return (
     <nav className="tabbar">
       {tabs.map((t) => (
-        <NavLink key={t.to} to={t.to} end={t.to === '/'} className={({ isActive }) => 'tab' + (isActive ? ' active' : '')}>
+        <NavLink
+          key={t.to}
+          to={t.to}
+          end={t.to === '/'}
+          aria-label={t.label}
+          className={({ isActive }) => 'tab' + (isActive ? ' active' : '')}
+        >
           {t.icon}
           <span>{t.label}</span>
         </NavLink>
@@ -72,7 +79,7 @@ export function TabBar() {
 /* ---------- Кольцо калорий ---------- */
 
 export function Ring({ value, goal, size = 132 }: { value: number; goal: number; size?: number }) {
-  const stroke = 12;
+  const stroke = 15;
   const r = (size - stroke) / 2;
   const c = 2 * Math.PI * r;
   const ratio = goal > 0 ? value / goal : 0;
@@ -155,8 +162,14 @@ export function Sheet({ open, onClose, title, children }: { open: boolean; onClo
     };
   }, [open, onClose]);
   if (!open) return null;
-  return (
-    <div className="sheet-backdrop" onClick={onClose}>
+  // Через портал прямо в <body>: матовые карточки (backdrop-filter) иначе «запирают» окно внутри себя
+  return createPortal(
+    <div
+      className="sheet-backdrop"
+      onClick={onClose}
+      onTouchStart={(e) => e.stopPropagation()}
+      onTouchEnd={(e) => e.stopPropagation()}
+    >
       <div className="sheet" role="dialog" aria-modal="true" onClick={(e) => e.stopPropagation()}>
         <div className="sheet-head">
           <div className="sheet-title">{title}</div>
@@ -166,7 +179,8 @@ export function Sheet({ open, onClose, title, children }: { open: boolean; onClo
         </div>
         <div className="sheet-body">{children}</div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
 

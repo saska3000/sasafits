@@ -145,12 +145,12 @@ export async function addRecipeEntry(args: {
 
 export type Mood = 'light' | 'hearty' | 'meat' | 'sweet' | 'any';
 
-export const MOODS: { id: Mood; label: string; emoji: string }[] = [
-  { id: 'light', label: 'Лёгкое', emoji: '🥗' },
-  { id: 'hearty', label: 'Сытное', emoji: '🍲' },
-  { id: 'meat', label: 'Мясное', emoji: '🍗' },
-  { id: 'sweet', label: 'Сладкое', emoji: '🍓' },
-  { id: 'any', label: 'Удиви меня', emoji: '✨' },
+export const MOODS: { id: Mood; label: string }[] = [
+  { id: 'light', label: 'Лёгкое' },
+  { id: 'hearty', label: 'Сытное' },
+  { id: 'meat', label: 'Мясное' },
+  { id: 'sweet', label: 'Сладкое' },
+  { id: 'any', label: 'Удиви меня' },
 ];
 
 export function fitsMood(r: Recipe, calc: RecipeCalc, mood: Mood): boolean {

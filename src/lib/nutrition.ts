@@ -2,11 +2,11 @@ import type { GoalType, Macros, MealType, Profile } from './types';
 
 export const ZERO: Macros = { kcal: 0, p: 0, f: 0, c: 0 };
 
-export const MEALS: { id: MealType; label: string; icon: string }[] = [
-  { id: 'breakfast', label: 'Завтрак', icon: '☀️' },
-  { id: 'lunch', label: 'Обед', icon: '🍲' },
-  { id: 'dinner', label: 'Ужин', icon: '🌙' },
-  { id: 'snack', label: 'Перекусы', icon: '🍎' },
+export const MEALS: { id: MealType; label: string }[] = [
+  { id: 'breakfast', label: 'Завтрак' },
+  { id: 'lunch', label: 'Обед' },
+  { id: 'dinner', label: 'Ужин' },
+  { id: 'snack', label: 'Перекусы' },
 ];
 
 export function mealLabel(m: MealType): string {

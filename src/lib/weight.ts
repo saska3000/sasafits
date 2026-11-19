@@ -49,32 +49,45 @@ export interface WeightProgress {
   left?: number;
   /** Доля пути 0…1 */
   share?: number;
+  /** Есть ли хоть одно настоящее взвешивание (иначе стоим на старте) */
+  measured: boolean;
 }
 
-/** Где человек на пути к цели. Старт — первое взвешивание (или вес из профиля). */
+/**
+ * Где человек на пути к цели.
+ * Старт — «вес на старте» из профиля (с какого веса начинали, даже до приложения),
+ * а если его не вписали — первое взвешивание. Текущий вес — только настоящие взвешивания.
+ */
 export function weightProgress(list: WeightEntry[], profile: Profile, date?: string): WeightProgress | null {
   const cur = date ? weightAt(list, date) : list.at(-1);
-  const current = cur?.kg ?? profile.weightKg;
-  const start = list[0]?.kg ?? profile.weightKg;
-  if (current == null || start == null) return null;
+  const start = profile.startWeightKg ?? list[0]?.kg;
+  if (start == null) return null;
+  const current = cur?.kg ?? start;
+  const measured = !!cur;
   const target = profile.targetWeightKg;
   const dir = target != null && target > start ? 1 : -1; // −1 — худеем, +1 — набираем
   const done = roundKg((current - start) * dir);
-  if (target == null) return { start, current, done };
+  if (target == null) return { start, current, done, measured };
   const total = Math.abs(target - start);
   const left = roundKg(Math.max(0, (target - current) * dir));
   const share = total > 0 ? Math.min(1, Math.max(0, done / total)) : current === target ? 1 : 0;
-  return { start, current, target, done, left, share };
+  return { start, current, target, done, left, share, measured };
+}
+
+/** Поменять старт или цель прямо с главной */
+export async function setProfileWeights(profileId: string, patch: { startWeightKg?: number; targetWeightKg?: number }) {
+  await db.profiles.update(profileId, { ...patch, updatedAt: Date.now() });
 }
 
 /** Тёплые слова по тому, сколько пути пройдено */
 export function cheer(p: WeightProgress): string {
-  if (p.share == null) return 'Задайте цель в профиле — и здесь появится путь к ней.';
-  if (p.share >= 1) return 'Цель достигнута! Ты молодец 💚';
-  if (p.done < 0) return 'Бывает. Главное — не сходить с тропы, всё получится 💚';
-  if (p.share === 0) return 'Первый шаг — самый важный. Вперёд! 🌱';
-  if (p.share < 0.25) return 'Хорошее начало — ты уже в пути 🌿';
-  if (p.share < 0.5) return 'Ты уже в самой чаще — так держать 🌲';
-  if (p.share < 0.75) return 'Больше половины пути позади! ✨';
-  return 'Опушка совсем близко — финиш виден 🏁';
+  if (p.share == null) return 'Задайте цель — и здесь появится путь к ней.';
+  if (!p.measured) return 'Впишите сегодняшний вес — и точка встанет на тропу.';
+  if (p.share >= 1) return 'Цель достигнута! Ты молодец.';
+  if (p.done < 0) return 'Бывает. Главное — не сходить с тропы, всё получится.';
+  if (p.share === 0) return 'Первый шаг — самый важный. Вперёд!';
+  if (p.share < 0.25) return 'Хорошее начало — ты уже в пути.';
+  if (p.share < 0.5) return 'Ты уже в самой чаще — так держать.';
+  if (p.share < 0.75) return 'Больше половины пути позади!';
+  return 'Опушка совсем близко — финиш виден.';
 }

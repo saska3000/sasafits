@@ -28,8 +28,8 @@ export default defineConfig({
         scope: '.',
         display: 'standalone',
         orientation: 'portrait',
-        background_color: '#f4faf9',
-        theme_color: '#f4faf9',
+        background_color: '#f8eef2',
+        theme_color: '#f8eef2',
         icons: [
           { src: 'pwa-64x64.png', sizes: '64x64', type: 'image/png' },
           { src: 'pwa-192x192.png', sizes: '192x192', type: 'image/png' },
@@ -38,7 +38,7 @@ export default defineConfig({
         ],
       },
       workbox: {
-        globPatterns: ['**/*.{js,css,html,svg,png,jpg,ico,webmanifest,wasm}'],
+        globPatterns: ['**/*.{js,css,html,svg,png,jpg,ico,webmanifest,wasm,woff2}'],
         maximumFileSizeToCacheInBytes: 3 * 1024 * 1024,
       },
     }),

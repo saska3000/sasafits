@@ -2,12 +2,13 @@ export type ThemeMode = 'auto' | 'light' | 'dark';
 
 const KEY = 'theme';
 
+/** По умолчанию — светлая; «как на телефоне» и тёмная включаются вручную в профиле */
 export function getTheme(): ThemeMode {
   try {
     const t = localStorage.getItem(KEY);
-    return t === 'light' || t === 'dark' ? t : 'auto';
+    return t === 'auto' || t === 'dark' ? t : 'light';
   } catch {
-    return 'auto';
+    return 'light';
   }
 }
 
@@ -16,8 +17,7 @@ export function applyTheme(mode: ThemeMode) {
   if (mode === 'auto') delete root.dataset.theme;
   else root.dataset.theme = mode;
   try {
-    if (mode === 'auto') localStorage.removeItem(KEY);
-    else localStorage.setItem(KEY, mode);
+    localStorage.setItem(KEY, mode);
   } catch {
     /* ignore */
   }

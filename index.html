@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <meta name="theme-color" content="#f4faf9" />
+    <meta name="theme-color" content="#f8eef2" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
@@ -14,8 +14,9 @@
     <script>
       // Тема ставится до загрузки, чтобы не было «вспышки» светлого экрана
       try {
+        // По умолчанию светлая; «auto» — как на телефоне
         var t = localStorage.getItem('theme');
-        if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t;
+        if (t !== 'auto') document.documentElement.dataset.theme = t === 'dark' ? 'dark' : 'light';
       } catch (e) {}
     </script>
   </head>

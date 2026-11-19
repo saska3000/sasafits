@@ -51,6 +51,8 @@ export interface Profile {
   heightCm?: number;
   weightKg?: number;
   targetWeightKg?: number;
+  /** С какого веса начинали (до приложения тоже) — от него идёт тропинка к цели */
+  startWeightKg?: number;
   /** Коэффициент активности для формулы (1.2 … 1.9) */
   activity: number;
   goalType: GoalType;

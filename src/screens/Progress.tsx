@@ -1,15 +1,14 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
 import { metaText } from '../components/WeightCard';
 import { WeightSheet } from '../components/WeightSheet';
-import { ForestTrail, WeightChart } from '../components/WeightViz';
+import { WeightChart } from '../components/WeightViz';
 import { Empty, TopBar } from '../components/ui';
 import { entryMacros, useProfileEntries } from '../lib/diary';
 import { addDays, fmtKcal, fmtNum, humanDate, plural, todayStr } from '../lib/format';
 import { sum } from '../lib/nutrition';
 import { useCurrentProfile } from '../lib/profiles';
 import type { DiaryEntry, Profile } from '../lib/types';
-import { cheer, useWeights, weightProgress } from '../lib/weight';
+import { useWeights, weightProgress } from '../lib/weight';
 
 /** Среднее за последние n дней — только по дням, где что-то записано */
 function average(entries: DiaryEntry[], days: number) {
@@ -66,62 +65,27 @@ export function ProgressScreen() {
     <div className="screen">
       <TopBar title="Прогресс" />
       <main className="content">
-        {!p ? (
-          <Empty icon="🌲" title="Путь начинается с первого шага">
-            Впишите свой вес — и здесь появится тропинка к цели и график.
+        {list.length === 0 ? (
+          <Empty title="Взвешиваний пока нет">
+            Впишите вес на главной или здесь — и появится график.
             <button className="btn primary" style={{ marginTop: 16 }} onClick={() => setSheet({ date: today, exists: false })}>
-              Вписать вес
+              Вписать вес за сегодня
             </button>
           </Empty>
         ) : (
-          <>
-            <section className="card trail-card">
-              <h2 className="card-title">Путь к цели</h2>
-              {p.share != null ? (
-                <>
-                  <ForestTrail
-                    share={p.share}
-                    letter={profile.name.slice(0, 1).toUpperCase()}
-                    startLabel={`старт ${fmtNum(p.start)} кг`}
-                    goalLabel={`цель ${fmtNum(p.target!)} кг`}
-                  />
-                  <div className="trail-nums">
-                    <div>
-                      <b>{fmtNum(Math.max(0, p.done))}</b>
-                      <span className="muted small">кг пройдено</span>
-                    </div>
-                    <div>
-                      <b>{fmtNum(p.current)}</b>
-                      <span className="muted small">кг сейчас</span>
-                    </div>
-                    <div>
-                      <b>{fmtNum(p.left!)}</b>
-                      <span className="muted small">кг осталось</span>
-                    </div>
-                  </div>
-                  <p className="trail-cheer">{cheer(p)}</p>
-                </>
-              ) : (
-                <p className="muted">
-                  Сейчас {fmtNum(p.current)} кг. {cheer(p)}{' '}
-                  <Link to="/profile" className="link">
-                    Открыть профиль
-                  </Link>
-                </p>
-              )}
-            </section>
-
-            <section className="card">
-              <div className="meal-head">
-                <h2 className="card-title">Вес</h2>
-                <span className="muted small">{metaText(p)}</span>
-              </div>
-              <WeightChart list={list} target={profile.targetWeightKg} />
-              <button className="btn outline" onClick={() => setSheet({ date: today, kg: todayEntry?.kg ?? p.current, exists: !!todayEntry })}>
-                {todayEntry ? `Сегодня ${fmtNum(todayEntry.kg)} кг — изменить` : 'Записать вес за сегодня'}
-              </button>
-            </section>
-          </>
+          <section className="card">
+            <div className="meal-head">
+              <h2 className="card-title">Вес</h2>
+              <span className="muted small">{metaText(p)}</span>
+            </div>
+            <WeightChart list={list} target={profile.targetWeightKg} />
+            <button
+              className="btn outline"
+              onClick={() => setSheet({ date: today, kg: todayEntry?.kg ?? list.at(-1)?.kg, exists: !!todayEntry })}
+            >
+              {todayEntry ? `Сегодня ${fmtNum(todayEntry.kg)} кг — изменить` : 'Записать вес за сегодня'}
+            </button>
+          </section>
         )}
 
         <section className="card">

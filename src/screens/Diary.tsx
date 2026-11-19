@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { AmountSheet } from '../components/AmountSheet';
 import { EntryFixSheet } from '../components/EntryFixSheet';
 import { WeightCard } from '../components/WeightCard';
-import { IconChevronLeft, IconChevronRight, IconPlus, IconWarn } from '../components/Icons';
+import { IconChevronLeft, IconChevronRight, IconPlus, IconWarn, MealIcon } from '../components/Icons';
 import { MacroBar, Ring, TopBar, toast } from '../components/ui';
 import { amountText, deleteEntry, entryMacros, restoreEntry, updateEntry, useDayEntries } from '../lib/diary';
 import { addDays, fmtG, fmtKcal, humanDate, isValidDateStr, todayStr } from '../lib/format';
@@ -80,7 +80,7 @@ export function DiaryScreen() {
       <main className="content">
         {!isToday && (
           <button className="today-pill" onClick={() => setParams({}, { replace: true })}>
-            ↩ К сегодняшнему дню
+            Вернуться к сегодня
           </button>
         )}
 
@@ -112,7 +112,7 @@ export function DiaryScreen() {
             <section className="card meal" key={meal.id}>
               <div className="meal-head">
                 <div className="meal-title">
-                  <span className="meal-icon">{meal.icon}</span>
+                  <MealIcon meal={meal.id} className="meal-icon" width={22} height={22} />
                   <span>{meal.label}</span>
                 </div>
                 <div className="meal-kcal">{list.length > 0 && <>{fmtKcal(mt.kcal)} ккал</>}</div>
