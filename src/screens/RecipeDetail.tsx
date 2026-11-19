@@ -4,7 +4,7 @@ import { AmountSheet } from '../components/AmountSheet';
 import { IconWarn } from '../components/Icons';
 import { RecipePic } from '../components/RecipePic';
 import { Empty, TopBar, toast, useGoBack } from '../components/ui';
-import { fmtG, fmtKcal, fmtNum, isValidDateStr, todayStr } from '../lib/format';
+import { fmtG, fmtKcal, fmtNum, isValidDateStr, plural, todayStr } from '../lib/format';
 import { guessMeal, mealLabel } from '../lib/nutrition';
 import { PHOTO_CREDITS } from '../data/photoCredits';
 import { useCurrentProfile } from '../lib/profiles';
@@ -55,13 +55,19 @@ export function RecipeDetailScreen() {
           <RecipePic recipe={recipe} className="recipe-hero-pic" />
           {PHOTO_CREDITS[recipe.id] && recipe.image?.startsWith('recipes/') && (
             <div className="photo-credit">
-              Фото: {PHOTO_CREDITS[recipe.id].creator}, {PHOTO_CREDITS[recipe.id].license}
+              Фото:{' '}
+              <a href={PHOTO_CREDITS[recipe.id].source} target="_blank" rel="noreferrer">
+                Pinterest
+              </a>
             </div>
           )}
           <h1>{recipe.name}</h1>
           <div className="muted small">
             {recipe.timeMin ? `⏱ ${recipe.timeMin} мин · ` : ''}
-            {recipe.meals.map(mealLabel).join(', ')} · выход ≈ {fmtNum(recipe.servings)} {recipe.servings < 5 ? 'порции' : 'порций'}
+            {recipe.meals.map(mealLabel).join(', ')} ·{' '}
+            {recipe.servings === 1
+              ? 'на 1 порцию'
+              : `выход ≈ ${fmtNum(recipe.servings)} ${Number.isInteger(recipe.servings) ? plural(recipe.servings, 'порция', 'порции', 'порций') : 'порции'}`}
           </div>
         </section>
 

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { RecipePic } from '../components/RecipePic';
 import { SwipeDeck, type SwipeDir } from '../components/SwipeDeck';
 import { Empty, TopBar, toast } from '../components/ui';
-import { fmtKcal, todayStr } from '../lib/format';
+import { fmtKcal, plural, todayStr } from '../lib/format';
 import { MEALS, guessMeal, mealLabel } from '../lib/nutrition';
 import { useProfiles } from '../lib/profiles';
 import {
@@ -147,7 +147,7 @@ export function SwipeScreen() {
                   <button key={m.id} className={'mood' + (m.id === 'any' ? ' wide' : '')} onClick={() => setMood(m.id)} disabled={n === 0}>
                     <span className="mood-emoji">{m.emoji}</span>
                     <span>{m.label}</span>
-                    <span className="muted small">{n ? `${n} ${n === 1 ? 'блюдо' : n < 5 ? 'блюда' : 'блюд'}` : 'нет'}</span>
+                    <span className="muted small">{n ? `${n} ${plural(n, 'блюдо', 'блюда', 'блюд')}` : 'нет'}</span>
                   </button>
                 );
               })}

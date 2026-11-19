@@ -1505,26 +1505,14 @@ input[type='search']::-webkit-search-cancel-button {
   text-align: right;
   margin-top: 4px;
 }
-/* Фото на белом фоне: показываем целиком, на белой подложке */
-.rcard-pic:has(.pic-img) {
-  background: #fff;
-}
-.rcard-pic .pic-img {
-  object-fit: contain;
-}
-.recipe-hero-pic.pic-img {
-  object-fit: contain;
-  background: #fff;
-}
-.recipe-emoji.pic-img {
-  background: #fff;
-  object-fit: contain;
-  border: 1px solid var(--border);
-}
-.match-pic {
-  background: #fff;
+/* Фото блюд — крупным планом, на всю карточку */
+.rcard-pic .pic-img,
+.recipe-hero-pic.pic-img,
+.recipe-emoji.pic-img,
+.match-pic .pic-img {
+  object-fit: cover;
 }
 .match-pic .pic-img {
-  object-fit: contain;
-  padding: 10px;
+  width: 100%;
+  height: 100%;
 }

@@ -1,5 +1,6 @@
 import { useLiveQuery } from 'dexie-react-hooks';
-import { MENU_RECIPES } from '../data/menuRecipes';
+import { MENU_RECIPES as OUR_MENU } from '../data/menuRecipes';
+import { NASTYA_RECIPES } from '../data/nastyaRecipes';
 import { db, newId } from './db';
 import { entryMacros } from './diary';
 import { starterFood } from './foods';
@@ -8,6 +9,9 @@ import { detectTags } from './restrictions';
 import type { DiaryEntry, Macros, MealType, Profile, Recipe, Tag, Vote } from './types';
 
 /* ---------- Рецепты из меню: кладём в базу при первом запуске ---------- */
+
+/** Все готовые рецепты: наше меню + меню Насти. Новые появляются у всех при следующем запуске. */
+const MENU_RECIPES = [...OUR_MENU, ...NASTYA_RECIPES];
 
 let seeding: Promise<void> | null = null;
 export function ensureMenuRecipes(): Promise<void> {

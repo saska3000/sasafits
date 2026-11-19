@@ -15,7 +15,7 @@ function defaultProfiles(): Profile[] {
       activity: 1.55,
       goalType: 'lose',
       goals: { kcal: 1600, p: 115, f: 50, c: 172 },
-      restrictions: ['nuts', 'hard', 'sticky', 'mushrooms', 'buckwheat', 'whitefish'],
+      restrictions: ['nuts', 'hard', 'sticky', 'mushrooms'],
       portionFactor: 1,
       updatedAt: now,
     },

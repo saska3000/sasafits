@@ -307,7 +307,7 @@ export function ProfileScreen() {
         <div className="muted small center">
           SasaFits · версия {__APP_VERSION__} ·{' '}
           <Link to="/credits" className="link">
-            авторы фото
+            откуда фото
           </Link>
         </div>
       </main>
