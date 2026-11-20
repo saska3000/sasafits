@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { addDays, plural, todayStr } from '../lib/format';
-import { petMood, petSay, recordVisit, streak, takeCelebration, useVisits } from '../lib/pet';
+import { celebrateSay, petHour, petMood, petSay, recordVisit, streak, takeCelebration, useVisits, type Celebration } from '../lib/pet';
 import { useProfiles } from '../lib/profiles';
 import type { DiaryEntry, Profile } from '../lib/types';
 import { PetPhoto } from './PetPhoto';
@@ -82,37 +82,46 @@ export function PetCard({
   const visits = useVisits(profile.id);
   const { updateProfile } = useProfiles();
   const [freshToday, setFreshToday] = useState(false);
-  const [celebrate, setCelebrate] = useState(false);
+  const [celebrate, setCelebrate] = useState<Celebration | null>(null);
   const [naming, setNaming] = useState(false);
   const [name, setName] = useState('');
+  // раз в минуту сверяемся с часами — в 10, 15 и 20 питомица проголодается
+  const [now, setNow] = useState(() => new Date());
+  useEffect(() => {
+    const t = window.setInterval(() => setNow(new Date()), 60_000);
+    return () => window.clearInterval(t);
+  }, []);
 
   // Сегодня зашли — в саду появляется бутон
   useEffect(() => {
     recordVisit(profile.id).then((fresh) => fresh && setFreshToday(true));
   }, [profile.id]);
 
-  // День только что заполнили — радуемся
+  // Только что покормили (записали еду) — радуется пару секунд, потом снова обычная
   useEffect(() => {
     if (!entries) return;
-    if (takeCelebration(profile.id, date)) {
-      setCelebrate(true);
-      const t = window.setTimeout(() => setCelebrate(false), 2600);
+    const kind = takeCelebration(profile.id, date);
+    if (kind) {
+      setCelebrate(kind);
+      const t = window.setTimeout(() => setCelebrate(null), kind === 'day' ? 3600 : 2800);
       return () => window.clearTimeout(t);
     }
   }, [entries, profile.id, date]);
 
   if (!entries || !visits) return null;
   const petName = profile.petName || DEFAULT_NAME;
-  const mood = petMood(entries, kcal, profile.goals.kcal);
-  const isToday = date === todayStr();
+  const hour = petHour(date, now);
+  const mood = celebrate ? 'joy' : petMood(entries, kcal, profile.goals.kcal, hour);
   const days = streak(visits);
 
   return (
     <section className="card pet-card">
       <div className="pet-top">
-        <PetPhoto mood={mood} celebrate={celebrate} name={petName} />
+        <PetPhoto mood={mood} celebrate={!!celebrate} name={petName} />
         <div className="pet-talk">
-          <div className={'pet-bubble' + (celebrate ? ' pop' : '')}>{petSay(mood, entries, isToday)}</div>
+          <div className={'pet-bubble' + (celebrate ? ' pop' : '')}>
+            {celebrate ? celebrateSay(celebrate) : petSay(mood, entries, hour)}
+          </div>
           <button
             className="pet-name"
             onClick={() => {

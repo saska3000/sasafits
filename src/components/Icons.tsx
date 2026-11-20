@@ -167,10 +167,12 @@ export const IconScale = (p: P) => (
     <path d="M12 10l1.6-1.6" />
   </Svg>
 );
-export const IconTree = (p: P) => (
+export const IconFlower = (p: P) => (
   <Svg {...p}>
-    <path d="M12 3l5 7h-3l4.5 6h-13L10 10H7z" />
-    <path d="M12 16v5" />
+    <circle cx="12" cy="8" r="2" />
+    <path d="M12 6c0-2.5 3-3 3-.5S12.8 8 14 8s3 .5 1.5 2.5S12 10 12 10s-2.2 3-3.5.5S10 8 10 8s-3-.5-3-2.5S12 3.5 12 6" />
+    <path d="M12 10v11" />
+    <path d="M12 17c-2.5 0-4-1.5-4.5-3.5 2.5 0 4 1.5 4.5 3.5z" />
   </Svg>
 );
 export const IconPlate = (p: P) => (

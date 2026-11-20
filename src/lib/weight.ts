@@ -82,12 +82,12 @@ export async function setProfileWeights(profileId: string, patch: { startWeightK
 /** Тёплые слова по тому, сколько пути пройдено */
 export function cheer(p: WeightProgress): string {
   if (p.share == null) return 'Задайте цель — и здесь появится путь к ней.';
-  if (!p.measured) return 'Впишите сегодняшний вес — и точка встанет на тропу.';
+  if (!p.measured) return 'Впишите сегодняшний вес — и питомица шагнёт по тропинке.';
   if (p.share >= 1) return 'Цель достигнута! Ты молодец.';
-  if (p.done < 0) return 'Бывает. Главное — не сходить с тропы, всё получится.';
+  if (p.done < 0) return 'Бывает. Главное — не сходить с тропинки, всё получится.';
   if (p.share === 0) return 'Первый шаг — самый важный. Вперёд!';
   if (p.share < 0.25) return 'Хорошее начало — ты уже в пути.';
-  if (p.share < 0.5) return 'Ты уже в самой чаще — так держать.';
+  if (p.share < 0.5) return 'Вокруг уже цветы — так держать.';
   if (p.share < 0.75) return 'Больше половины пути позади!';
-  return 'Опушка совсем близко — финиш виден.';
+  return 'Флажок совсем близко — финиш виден.';
 }

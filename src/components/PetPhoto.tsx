@@ -10,12 +10,22 @@ export function PetPhoto({ mood, celebrate, name }: { mood: PetMood; celebrate: 
       {mood === 'joy' && (
         <svg className="pet-badge pet-flower" viewBox="-12 -12 24 24" aria-hidden="true">
           {[0, 72, 144, 216, 288].map((r) => (
-            <ellipse key={r} cx={0} cy={-5} rx={3.8} ry={5.6} transform={`rotate(${r})`} fill="#ffffff" stroke="#efb8c8" strokeWidth={0.7} />
+            <ellipse
+              key={r}
+              cx={0}
+              cy={-5}
+              rx={3.8}
+              ry={5.6}
+              transform={`rotate(${r})`}
+              fill="#ffffff"
+              stroke="#efb8c8"
+              strokeWidth={0.7}
+            />
           ))}
           <circle r={3} fill="#f2d36b" />
         </svg>
       )}
-      {mood === 'full' && (
+      {(mood === 'full' || mood === 'sleep') && (
         <span className="pet-badge pet-zzz" aria-hidden="true">
           z<small>z</small>
         </span>

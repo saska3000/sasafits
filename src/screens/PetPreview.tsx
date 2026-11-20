@@ -8,6 +8,7 @@ export function PetPreview() {
     ['hungry', 'голодная'],
     ['joy', 'довольная'],
     ['full', 'объелась'],
+    ['sleep', 'спит'],
   ];
   return (
     <main className="content" style={{ maxWidth: 900, margin: '0 auto' }}>

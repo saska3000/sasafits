@@ -114,6 +114,8 @@ export function Surprise({
   const bodies = useRef<Body[]>([]);
   const tilt = useRef({ gx: 0, gy: 0, base: null as null | { b: number; g: number } });
   const shakes = useRef<number[]>([]);
+  // когда начали трясти и когда был последний сильный рывок — блюдо выпадает, когда перестали трясти
+  const session = useRef({ start: 0, lastStrong: 0, bySensor: false });
   const phaseRef = useRef(phase);
   phaseRef.current = phase;
   const timers = useRef<number[]>([]);
@@ -136,7 +138,12 @@ export function Surprise({
     }
   };
 
-  const go = useCallback(() => {
+  const pick = useCallback(() => {
+    setWinner(Math.floor(Math.random() * Math.min(5, cards.length)));
+    setPhase('picked');
+  }, [cards]);
+
+  const go = useCallback((bySensor = false) => {
     if (phaseRef.current === 'shaking' || cards.length === 0) return;
     timers.current.forEach(clearTimeout);
     (document.activeElement as HTMLElement | null)?.blur?.();
@@ -146,14 +153,29 @@ export function Surprise({
     }
     setWinner(null);
     setPhase('shaking');
-    kick(1400);
-    timers.current.push(
-      window.setTimeout(() => {
-        setWinner(Math.floor(Math.random() * Math.min(5, cards.length)));
-        setPhase('picked');
-      }, 1100),
-    );
-  }, [cards, scatter]);
+    const now = Date.now();
+    session.current = { start: now, lastStrong: now, bySensor };
+    kick(bySensor ? 600 : 1400);
+    if (bySensor) return; // дальше фигурки летают от ваших рывков, а выбор — когда перестанете трясти
+    // по кнопке — фигурки полетают пару секунд
+    timers.current.push(window.setTimeout(() => kick(700), 700));
+    timers.current.push(window.setTimeout(pick, 2300));
+  }, [cards, scatter, pick]);
+
+  // Трясёте — фигурки летают; перестали трясти — ещё секунду успокаиваются, и выпадает блюдо
+  useEffect(() => {
+    if (phase !== 'shaking') return;
+    const iv = window.setInterval(() => {
+      const ses = session.current;
+      if (!ses.bySensor) return;
+      const now = Date.now();
+      if (now - ses.lastStrong > 1200 && now - ses.start > 1500) {
+        window.clearInterval(iv);
+        pick();
+      }
+    }, 150);
+    return () => window.clearInterval(iv);
+  }, [phase, pick]);
 
   // Анимация: каждый кадр двигаем фигурки (наклон, толчки, стенки, столкновения)
   useEffect(() => {
@@ -253,12 +275,15 @@ export function Surprise({
       }
       const mag = Math.hypot(a.x ?? 0, a.y ?? 0, a.z ?? 0);
       const now = Date.now();
-      if (mag > 13) shakes.current.push(now);
+      if (mag > 13) {
+        shakes.current.push(now);
+        session.current.lastStrong = now;
+      }
       shakes.current = shakes.current.filter((t) => now - t < 900);
       // встряхивание — это несколько сильных рывков подряд, а не просто поворот телефона
       if (shakes.current.length >= 6 && phaseRef.current !== 'shaking') {
         shakes.current = [];
-        go();
+        go(true);
       }
     };
     window.addEventListener('deviceorientation', onOrient);
@@ -363,7 +388,7 @@ export function Surprise({
             Включить датчики движения
           </button>
         )}
-        <button className="btn outline" onClick={go} disabled={phase === 'shaking'}>
+        <button className="btn outline" onClick={() => go(false)} disabled={phase === 'shaking'}>
           {picked ? 'Ещё раз' : 'Перемешать'}
         </button>
       </div>

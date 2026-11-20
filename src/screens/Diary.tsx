@@ -85,6 +85,8 @@ export function DiaryScreen() {
           </button>
         )}
 
+        <PetCard profile={profile} date={date} entries={entries} kcal={total.kcal} />
+
         <section className="card summary">
           <div className="summary-top">
             <Ring value={total.kcal} goal={g.kcal} />
@@ -105,8 +107,6 @@ export function DiaryScreen() {
             <MacroBar label="Углеводы" value={total.c} goal={g.c} color="var(--carbs)" />
           </div>
         </section>
-
-        <PetCard profile={profile} date={date} entries={entries} kcal={total.kcal} />
 
         {MEALS.map((meal) => {
           const list = (entries ?? []).filter((e) => e.meal === meal.id);

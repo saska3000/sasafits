@@ -24,9 +24,13 @@
   /* Почти чёрный — главные кнопки и панель вкладок */
   --ink: #1f1c1d;
   --on-ink: #ffffff;
-  /* Главная кнопка / выбранная таблетка */
-  --cta: #1f1c1d;
-  --on-cta: #ffffff;
+  /* Главная кнопка / выбранная таблетка — голубая */
+  --cta: #b4d3e8;
+  --on-cta: #1f1c1d;
+  /* Большие кнопки «Что поедим?» и «Удиви меня»: голубой переходит в ваниль */
+  --hero-bg: linear-gradient(120deg, #b4d3e8 0%, #d6e4e6 50%, #ecedb9 100%);
+  --on-hero: #1f1c1d;
+  --hero-icon-bg: rgba(255, 255, 255, 0.75);
   /* Пастельные плитки */
   --rose: #e7b7b9;
   --rose-soft: #f3dedd;
@@ -82,6 +86,9 @@
     --on-ink: #f3efed;
     --cta: #dfe97a;
     --on-cta: #1f1c1d;
+    --hero-bg: #2a2627;
+    --on-hero: #f3efed;
+    --hero-icon-bg: #dfe97a;
     --rose: #e3a9ad;
     --rose-soft: #3a2628;
     --ice: #263640;
@@ -134,6 +141,9 @@
   --on-ink: #f3efed;
   --cta: #dfe97a;
   --on-cta: #1f1c1d;
+  --hero-bg: #2a2627;
+  --on-hero: #f3efed;
+  --hero-icon-bg: #dfe97a;
   --rose: #e3a9ad;
   --rose-soft: #3a2628;
   --ice: #263640;
@@ -1961,7 +1971,7 @@ input[type='search']::-webkit-search-cancel-button {
       color-mix(in srgb, var(--vanilla) 80%, transparent));
 }
 
-/* Кнопки-таблетки: главная — почти чёрная */
+/* Кнопки-таблетки: главная — голубая */
 .btn {
   border-radius: 999px;
 }
@@ -2025,14 +2035,14 @@ input[type='search']::-webkit-search-cancel-button {
   color: var(--text);
 }
 .swipe-cta {
-  background: var(--ink);
-  color: var(--on-ink);
+  background: var(--hero-bg);
+  color: var(--on-hero);
 }
 .swipe-cta .small {
-  color: color-mix(in srgb, var(--on-ink) 70%, transparent);
+  color: color-mix(in srgb, var(--on-hero) 70%, transparent);
 }
 .swipe-cta-icon {
-  background: var(--accent);
+  background: var(--hero-icon-bg);
   color: var(--accent-ink);
 }
 .mood.mood-light {
@@ -2048,15 +2058,15 @@ input[type='search']::-webkit-search-cancel-button {
   background: color-mix(in srgb, var(--ice) 85%, transparent);
 }
 .mood.wide {
-  background: var(--ink);
-  color: var(--on-ink);
+  background: var(--hero-bg);
+  color: var(--on-hero);
   border-color: var(--glass-border);
 }
 .mood.wide .mood-icon {
-  color: var(--accent);
+  color: var(--on-hero);
 }
 .mood.wide .muted {
-  color: color-mix(in srgb, var(--on-ink) 65%, transparent);
+  color: color-mix(in srgb, var(--on-hero) 65%, transparent);
 }
 .mood-icon {
   color: currentColor;
@@ -2113,7 +2123,7 @@ input[type='search']::-webkit-search-cancel-button {
   align-items: center;
   justify-content: center;
   will-change: transform;
-  transition: opacity 0.35s ease;
+  transition: opacity 0.6s ease;
   filter: drop-shadow(0 8px 18px rgba(40, 30, 30, 0.1));
 }
 .shape svg {
@@ -2144,8 +2154,8 @@ input[type='search']::-webkit-search-cancel-button {
 .shape.win {
   z-index: 2;
   transition:
-    transform 0.55s cubic-bezier(0.3, 1.35, 0.5, 1),
-    opacity 0.3s ease;
+    transform 0.9s cubic-bezier(0.25, 1.25, 0.45, 1),
+    opacity 0.5s ease;
 }
 .shape.win .shape-name {
   font-size: 12px;
@@ -2249,7 +2259,7 @@ input[type='search']::-webkit-search-cancel-button {
   width: 100%;
   height: 100%;
   transform-origin: 50% 100%;
-  animation: pet-breathe 3.4s ease-in-out infinite;
+  animation: pet-breathe 2.2s ease-in-out infinite;
   user-select: none;
   -webkit-user-select: none;
   -webkit-touch-callout: none;
@@ -2259,12 +2269,12 @@ input[type='search']::-webkit-search-cancel-button {
   100% {
     transform: scale(1, 1);
   }
-  50% {
-    transform: scale(1.02, 0.98);
+  45% {
+    transform: scale(1.05, 0.95);
   }
 }
 .pet-photo.mood-hungry .doodle {
-  animation: pet-breathe 4.5s ease-in-out infinite;
+  animation: pet-breathe 3s ease-in-out infinite;
 }
 @keyframes pet-hungry {
   0%,
@@ -2279,7 +2289,7 @@ input[type='search']::-webkit-search-cancel-button {
   }
 }
 .pet-photo.mood-full .doodle {
-  animation: pet-breathe 5s ease-in-out infinite;
+  animation: pet-breathe 2.8s ease-in-out infinite;
   opacity: 0.92;
 }
 .pet-photo.celebrate .doodle {
@@ -2381,16 +2391,57 @@ input[type='search']::-webkit-search-cancel-button {
 .doodle .doodle-eye {
   transform-box: fill-box;
   transform-origin: 50% 50%;
-  animation: pet-blink 5s infinite;
+  animation: pet-blink 3s infinite;
 }
 @keyframes pet-blink {
   0%,
-  94%,
+  88%,
+  96%,
   100% {
     transform: scaleY(1);
   }
-  96% {
+  92% {
     transform: scaleY(0.1);
+  }
+}
+
+/* ночью: кровать стоит, а питомица под одеялом медленно дышит */
+.pet-photo.mood-sleep .doodle {
+  animation: none;
+}
+.doodle .sleep-breathe {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: pet-breathe 3.6s ease-in-out infinite;
+}
+
+/* питомица шагает по тропинке: покачивается с ножки на ножку */
+.trail-pet {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: trail-walk 0.9s ease-in-out infinite;
+}
+@keyframes trail-walk {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-5deg);
+  }
+  25% {
+    transform: translateY(-2px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(0) rotate(5deg);
+  }
+  75% {
+    transform: translateY(-2px) rotate(0deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .trail-pet,
+  .doodle .sleep-breathe,
+  .pet-photo .doodle,
+  .doodle .doodle-eye {
+    animation: none;
   }
 }
 .sr-only {

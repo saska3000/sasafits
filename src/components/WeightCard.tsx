@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { fmtNum, humanDate } from '../lib/format';
 import type { Profile } from '../lib/types';
 import { cheer, roundKg, setWeight, useWeights, weightAt, weightProgress, type WeightProgress } from '../lib/weight';
-import { IconScale, IconTree } from './Icons';
+import { IconFlower, IconScale } from './Icons';
 import { GoalSheet, WeightSheet } from './WeightSheet';
 import { ForestTrail } from './WeightViz';
 
@@ -17,7 +17,7 @@ export function metaText(p: WeightProgress | null): string {
 }
 
 /**
- * Главная карточка веса: лесная тропа от старта к цели и счётчик «−» / «+» по 100 г.
+ * Карточка веса: цветочная тропинка от старта к цели и счётчик «−» / «+» по 100 г.
  * Показываем только настоящие взвешивания — вес из профиля за взвешивание не выдаём.
  */
 export function WeightCard({ profile, date, showTrail = false }: { profile: Profile; date: string; showTrail?: boolean }) {
@@ -39,7 +39,11 @@ export function WeightCard({ profile, date, showTrail = false }: { profile: Prof
     <section className="card weight-card">
       <div className="meal-head">
         <div className="meal-title">
-          {showTrail ? <IconTree className="meal-icon" width={22} height={22} /> : <IconScale className="meal-icon" width={22} height={22} />}
+          {showTrail ? (
+            <IconFlower className="meal-icon" width={22} height={22} />
+          ) : (
+            <IconScale className="meal-icon" width={22} height={22} />
+          )}
           <span>{showTrail ? 'Путь к цели' : 'Вес'}</span>
         </div>
         {!showTrail && (
@@ -53,7 +57,7 @@ export function WeightCard({ profile, date, showTrail = false }: { profile: Prof
         <>
           <ForestTrail
             share={p.share}
-            letter={profile.name.slice(0, 1).toUpperCase()}
+            petName={profile.petName || 'Зефирка'}
             startLabel={`старт ${fmtNum(p.start)} кг`}
             goalLabel={`цель ${fmtNum(p.target!)} кг`}
           />
@@ -61,7 +65,7 @@ export function WeightCard({ profile, date, showTrail = false }: { profile: Prof
         </>
       ) : (
         <p className="muted small trail-setup">
-          Впишите, с какого веса вы начинали и какой хотите, — появится тропинка через лес к цели.
+          Впишите, с какого веса вы начинали и какой хотите, — появится тропинка через цветочную поляну к цели.
         </p>
       )}
 
@@ -101,15 +105,7 @@ export function WeightCard({ profile, date, showTrail = false }: { profile: Prof
         </button>
       </div>
 
-      {sheet === 'day' && (
-        <WeightSheet
-          profile={profile}
-          date={date}
-          initial={shown}
-          exists={!!exact}
-          onClose={() => setSheet(null)}
-        />
-      )}
+      {sheet === 'day' && <WeightSheet profile={profile} date={date} initial={shown} exists={!!exact} onClose={() => setSheet(null)} />}
       {(sheet === 'start' || sheet === 'target') && <GoalSheet profile={profile} kind={sheet} onClose={() => setSheet(null)} />}
     </section>
   );

@@ -1,4 +1,4 @@
-import { useId } from 'react';
+import { useId, type SVGProps } from 'react';
 import type { PetMood } from '../lib/pet';
 
 /*
@@ -21,8 +21,20 @@ const EY = 112;
 const ER = 22;
 const MOUTH_Y = 141;
 
-export function Monster({ mood, celebrate, className = '' }: { mood: PetMood; celebrate?: boolean; className?: string }) {
+export function Monster({
+  mood,
+  celebrate,
+  className = '',
+  svgProps,
+}: {
+  mood: PetMood;
+  celebrate?: boolean;
+  className?: string;
+  /** Размер и место, когда питомица нарисована внутри другой картинки (на тропинке) */
+  svgProps?: SVGProps<SVGSVGElement>;
+}) {
   const id = 'd' + useId().replace(/[^a-zA-Z0-9]/g, '');
+  if (mood === 'sleep') return <Sleeping id={id} className={className} svgProps={svgProps} />;
   // голодная лежит без сил; объевшаяся стоит «грушей»; глаз у обеих сонный
   const lying = mood === 'hungry';
   const sleepy = mood === 'hungry' || mood === 'full';
@@ -34,7 +46,13 @@ export function Monster({ mood, celebrate, className = '' }: { mood: PetMood; ce
         : ['M40 120 Q30 136 30 150', 'M160 120 Q170 136 170 150'];
 
   return (
-    <svg className={`doodle ${celebrate ? 'celebrate' : ''} ${className}`} viewBox="0 0 200 220" role="img" aria-label="Питомица">
+    <svg
+      className={`doodle ${celebrate ? 'celebrate' : ''} ${className}`}
+      viewBox="0 0 200 220"
+      role="img"
+      aria-label="Питомица"
+      {...svgProps}
+    >
       <defs>
         {/* чуть неровные, «нарисованные от руки» края */}
         <filter id={`${id}-hand`} x="-10%" y="-10%" width="120%" height="120%">
@@ -116,7 +134,13 @@ export function Monster({ mood, celebrate, className = '' }: { mood: PetMood; ce
           ) : mood === 'joy' ? (
             <>
               {/* милая улыбочка с маленькими клычками */}
-              <path d={`M78 ${MOUTH_Y - 1} Q100 ${MOUTH_Y + 16} 122 ${MOUTH_Y - 1}`} fill="none" stroke={INK} strokeWidth={3.4} strokeLinecap="round" />
+              <path
+                d={`M78 ${MOUTH_Y - 1} Q100 ${MOUTH_Y + 16} 122 ${MOUTH_Y - 1}`}
+                fill="none"
+                stroke={INK}
+                strokeWidth={3.4}
+                strokeLinecap="round"
+              />
               {[-1, 1].map((k) => (
                 <path
                   key={k}
@@ -154,6 +178,84 @@ export function Monster({ mood, celebrate, className = '' }: { mood: PetMood; ce
           )}
         </g>
       </g>
+    </svg>
+  );
+}
+
+/** Ночью: спит в кровати под одеялом, в ночном колпаке, глаз закрыт */
+function Sleeping({ id, className, svgProps }: { id: string; className: string; svgProps?: SVGProps<SVGSVGElement> }) {
+  const CAP = 'M80 64 C82 40 100 22 124 20 C140 19 150 27 154 36 C142 31 130 33 124 41 C119 48 119 56 121 64 Z';
+  return (
+    <svg className={`doodle sleeping ${className}`} viewBox="0 0 200 220" role="img" aria-label="Питомица спит" {...svgProps}>
+      <defs>
+        <filter id={`${id}-hand`} x="-10%" y="-10%" width="120%" height="120%">
+          <feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="2" seed="5" result="n" />
+          <feDisplacementMap in="SourceGraphic" in2="n" scale="1.8" xChannelSelector="R" yChannelSelector="G" />
+        </filter>
+        <clipPath id={`${id}-cap`}>
+          <path d={CAP} />
+        </clipPath>
+      </defs>
+      <ellipse cx={100} cy={213} rx={86} ry={4} fill="rgba(40,30,30,0.08)" />
+      {/* изголовье кровати и подушка */}
+      <path d="M22 170 V104 Q22 86 40 86 H160 Q178 86 178 104 V170 Z" fill="#cfe0ea" stroke="#a9c6da" strokeWidth={2.5} />
+      <path d="M60 92 V150 M100 92 V150 M140 92 V150" stroke="#b9d2e2" strokeWidth={2} strokeLinecap="round" />
+      <ellipse cx={100} cy={132} rx={80} ry={22} fill="#ffffff" stroke="#e8e1e6" strokeWidth={2} />
+
+      {/* питомица дышит под одеялом */}
+      <g className="sleep-breathe">
+        <g filter={`url(#${id}-hand)`}>
+          {EARS.map((d) => (
+            <path key={d} d={d} fill={PINK} stroke={PINK} strokeWidth={6} strokeLinejoin="round" />
+          ))}
+          <path d={BODY} fill={PINK} />
+          {[-1, 1].map((k) => (
+            <ellipse key={k} cx={EX + k * (ER + 14)} cy={EY + ER} rx={8} ry={4.5} fill="#ff5fa2" opacity={0.35} />
+          ))}
+        </g>
+        {/* закрытый глаз с ресничками вниз */}
+        <g stroke={INK} strokeWidth={3.4} strokeLinecap="round" fill="none">
+          <path d={`M${EX - 20} ${EY + 2} Q${EX} ${EY + 18} ${EX + 20} ${EY + 2}`} />
+          <path d={`M${EX - 11} ${EY + 10} l-4 6 M${EX} ${EY + 12} v7 M${EX + 11} ${EY + 10} l4 6`} strokeWidth={2.4} />
+        </g>
+        {/* ночной колпак с помпоном */}
+        <path d={CAP} fill="#b4d3e8" />
+        <g clipPath={`url(#${id}-cap)`} stroke="#ecedb9" strokeWidth={6}>
+          <path d="M70 44 L130 30 M76 58 L140 42 M118 26 L158 20" />
+        </g>
+        <path d={CAP} fill="none" stroke="#8fb5cf" strokeWidth={1.6} strokeLinejoin="round" />
+        <rect x={74} y={58} width={52} height={13} rx={6.5} fill="#ffffff" stroke="#e3dde3" strokeWidth={1.6} />
+        <circle cx={155} cy={38} r={8} fill="#ffffff" stroke="#e3dde3" strokeWidth={1.6} />
+      </g>
+
+      {/* одеяло с отвёрнутой простынкой; ручки держат край */}
+      <path
+        d="M12 160 C12 148 30 144 52 142 C80 139 120 139 148 142 C170 144 188 148 188 160 V198 Q188 208 178 208 H22 Q12 208 12 198 Z"
+        fill="#f3ebb6"
+        stroke="#ddd08c"
+        strokeWidth={2}
+      />
+      <path
+        d="M12 160 C12 148 30 144 52 142 C80 139 120 139 148 142 C170 144 188 148 188 160 V164 C150 158 50 158 12 164 Z"
+        fill="#ffffff"
+        stroke="#e8e1e6"
+        strokeWidth={1.6}
+      />
+      {[
+        [40, 182],
+        [70, 194],
+        [100, 178],
+        [130, 194],
+        [160, 182],
+      ].map(([x, y]) => (
+        <circle key={x} cx={x} cy={y} r={3.2} fill="#e3d68e" />
+      ))}
+      {[74, 126].map((x) => (
+        <ellipse key={x} cx={x} cy={146} rx={8} ry={6.5} fill={PINK} />
+      ))}
+      {/* ножки кровати */}
+      <rect x={22} y={206} width={8} height={9} rx={2} fill="#c9b698" />
+      <rect x={170} y={206} width={8} height={9} rx={2} fill="#c9b698" />
     </svg>
   );
 }
