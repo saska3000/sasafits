@@ -170,13 +170,10 @@ export function Surprise({
         const H = st.clientHeight;
         const S = W * SIZE;
         const list = bodies.current;
-        const t = now / 1000;
-        list.forEach((b, i) => {
-          // наклон телефона тянет фигурки; без датчика — лёгкое «покачивание на воде»
-          const drift = motionOn ? 0 : 14;
-          b.vx += (tilt.current.gx * 900 + Math.sin(t * 0.7 + i * 1.7) * drift) * dt;
-          b.vy += (tilt.current.gy * 900 + Math.cos(t * 0.6 + i * 2.1) * drift) * dt;
-          b.vr += Math.sin(t * 0.5 + i) * 2 * dt;
+        list.forEach((b) => {
+          // фигурки двигаются только от наклона телефона и толчков — сами по себе стоят
+          b.vx += tilt.current.gx * 900 * dt;
+          b.vy += tilt.current.gy * 900 * dt;
           b.vx *= 0.965;
           b.vy *= 0.965;
           b.vr *= 0.95;
@@ -277,9 +274,13 @@ export function Surprise({
   const enableMotion = async () => {
     (document.activeElement as HTMLElement | null)?.blur?.();
     try {
-      const m = await motionCtor()?.requestPermission?.();
-      const o = await orientCtor()?.requestPermission?.();
-      if (m !== 'denied' && o !== 'denied') {
+      // Оба запроса — сразу, в одном нажатии: iPhone разрешает их только по нажатию пользователя
+      const asks = [motionCtor()?.requestPermission?.(), orientCtor()?.requestPermission?.()].filter(
+        (p): p is Promise<'granted' | 'denied'> => !!p,
+      );
+      const results = await Promise.allSettled(asks);
+      const granted = !asks.length || results.some((r) => r.status === 'fulfilled' && r.value === 'granted');
+      if (granted) {
         tilt.current.base = null;
         setMotionOn(true);
         toast('Готово — наклоняйте и встряхивайте телефон');
